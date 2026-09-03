@@ -125,7 +125,10 @@ mod tests {
 
         let sys_res = res.to_sys();
         assert_eq!(sys_res.resource, dummy_handle);
-        assert_eq!(sys_res.state, fsr_sys::FFX_API_RESOURCE_STATE_COMPUTE_READ as _);
+        assert_eq!(
+            sys_res.state,
+            fsr_sys::FFX_API_RESOURCE_STATE_COMPUTE_READ as _
+        );
         unsafe {
             assert_eq!(sys_res.description.__bindgen_anon_1.width, 1920);
             assert_eq!(sys_res.description.__bindgen_anon_2.height, 1080);

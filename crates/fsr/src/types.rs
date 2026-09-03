@@ -25,7 +25,9 @@ impl fmt::Display for FsrError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Failed => write!(f, "FSR operation failed"),
-            Self::InvalidPointer => write!(f, "Invalid pointer or descriptor structure passed to FSR"),
+            Self::InvalidPointer => {
+                write!(f, "Invalid pointer or descriptor structure passed to FSR")
+            }
             Self::InvalidParameter => write!(f, "Invalid parameter or configuration in FSR"),
             Self::DriverError => write!(f, "GPU driver error occurred during FSR operation"),
             Self::LibraryNotFound => write!(f, "Required FidelityFX dynamic library was not found"),
