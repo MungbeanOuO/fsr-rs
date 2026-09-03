@@ -1,0 +1,22 @@
+[package]
+name = "fsr"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage = "https://github.com/mungbean/fsr-rs"
+documentation = "https://docs.rs/fsr"
+readme = "../../README.md"
+description = "Modern, safe, zero-dependency Rust bindings for AMD FidelityFX Super Resolution (FSR)"
+keywords = ["graphics", "fsr", "upscaling", "vulkan", "directx"]
+categories = ["rendering::graphics-api", "game-development"]
+
+[features]
+default = ["vulkan"]
+vulkan = ["fsr-sys/vulkan"]
+dx12 = ["fsr-sys/dx12"]
+
+[dependencies]
+fsr-sys = { path = "../fsr-sys", default-features = false }
+bitflags = "2.13.1"
