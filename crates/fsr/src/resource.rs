@@ -34,6 +34,7 @@ impl Default for FsrResource {
 impl FsrResource {
     /// Create a null/empty resource descriptor.
     #[inline]
+    #[must_use]
     pub const fn null() -> Self {
         Self {
             resource: std::ptr::null_mut(),
@@ -81,12 +82,13 @@ impl FsrResource {
 
     /// Convert to the raw C-ABI `fsr_sys::FfxApiResource` structure.
     #[inline]
+    #[must_use]
     pub fn to_sys(self) -> fsr_sys::FfxApiResource {
         fsr_sys::FfxApiResource {
             resource: self.resource,
             description: fsr_sys::FfxApiResourceDescription {
-                type_: fsr_sys::FFX_API_RESOURCE_TYPE_TEXTURE2D,
-                format: self.format as u32,
+                type_: fsr_sys::FFX_API_RESOURCE_TYPE_TEXTURE2D as _,
+                format: self.format as u32 as _,
                 __bindgen_anon_1: fsr_sys::FfxApiResourceDescription__bindgen_ty_1 {
                     width: self.dimensions.width,
                 },
@@ -97,11 +99,11 @@ impl FsrResource {
                     depth: self.depth,
                 },
                 mipCount: self.mip_count,
-                flags: fsr_sys::FFX_API_RESOURCE_FLAGS_NONE,
-                usage: fsr_sys::FFX_API_RESOURCE_USAGE_RENDERTARGET
-                    | fsr_sys::FFX_API_RESOURCE_USAGE_UAV,
+                flags: fsr_sys::FFX_API_RESOURCE_FLAGS_NONE as _,
+                usage: (fsr_sys::FFX_API_RESOURCE_USAGE_RENDERTARGET as u32
+                    | fsr_sys::FFX_API_RESOURCE_USAGE_UAV as u32) as _,
             },
-            state: self.state.bits(),
+            state: self.state.bits() as _,
         }
     }
 }
