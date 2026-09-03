@@ -1,0 +1,14 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/fsr-sys",
+    "crates/fsr",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+authors = ["mungbean"]
+repository = "https://github.com/mungbean/fsr-rs"
+readme = "README.md"
