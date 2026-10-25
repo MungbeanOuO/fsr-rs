@@ -10,5 +10,13 @@ version = "0.1.0"
 edition = "2024"
 license = "MIT OR Apache-2.0"
 authors = ["mungbean"]
-repository = "https://github.com/mungbean/fsr-rs"
+repository = "https://github.com/mungbeanouo/fsr-rs"
+homepage = "https://github.com/mungbeanouo/fsr-rs"
 readme = "README.md"
+publish = false
+
+[workspace.dependencies]
+fsr-sys = { version = "0.1.0", path = "crates/fsr-sys", default-features = false }
+bitflags = "2.13"
+bindgen = "0.73"
+

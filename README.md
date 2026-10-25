@@ -37,7 +37,7 @@ Add `fsr` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-fsr = { git = "https://github.com/mungbean/fsr-rs.git", features = ["vulkan"] }
+fsr = { git = "https://github.com/mungbeanouo/fsr-rs.git", features = ["vulkan"] }
 ```
 
 ### 1. Temporal Upscaler (`FsrUpscaler`)
@@ -248,7 +248,7 @@ assert_eq!(mip_lod_bias, -2.0); // 2x upscale -> log2(1920 / 3840) - 1.0 = -2.0
 
 ## 🤝 Acknowledgements
 
-- Developed with pair-programming assistance from **Gemini Code Assist (Google DeepMind)**.
+- Developed with pair-programming assistance from **Antigravity**.
 - AMD FidelityFX SDK is a trademark of Advanced Micro Devices, Inc.
 
 ---

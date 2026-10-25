@@ -5,7 +5,8 @@ edition.workspace = true
 license.workspace = true
 authors.workspace = true
 repository.workspace = true
-homepage = "https://github.com/mungbean/fsr-rs"
+homepage.workspace = true
+publish.workspace = true
 documentation = "https://docs.rs/fsr"
 readme = "../../README.md"
 description = "Modern, safe, zero-dependency Rust bindings for AMD FidelityFX Super Resolution (FSR)"
@@ -18,5 +19,5 @@ vulkan = ["fsr-sys/vulkan"]
 dx12 = ["fsr-sys/dx12"]
 
 [dependencies]
-fsr-sys = { path = "../fsr-sys", default-features = false }
-bitflags = "2.13.1"
+fsr-sys.workspace = true
+bitflags.workspace = true

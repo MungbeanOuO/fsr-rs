@@ -5,9 +5,10 @@ edition.workspace = true
 license.workspace = true
 authors.workspace = true
 repository.workspace = true
-homepage = "https://github.com/mungbean/fsr-rs"
+homepage.workspace = true
+publish.workspace = true
 documentation = "https://docs.rs/fsr-sys"
-readme = "README.md"
+readme = "../../README.md"
 description = "Raw C-ABI FFI bindings to AMD FidelityFX Super Resolution (FSR) and ffx_api"
 keywords = ["graphics", "fsr", "ffi", "vulkan", "directx"]
 categories = ["rendering::graphics-api", "external-ffi-bindings"]
@@ -21,5 +22,4 @@ compile-shaders = []
 [dependencies]
 
 [build-dependencies]
-bindgen = "0.72.1"
-cc = "1.4.4"
+bindgen.workspace = true
