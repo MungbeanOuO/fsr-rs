@@ -6,7 +6,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 license = "MIT OR Apache-2.0"
 authors = ["mungbean"]
@@ -16,7 +16,7 @@ readme = "README.md"
 publish = false
 
 [workspace.dependencies]
-fsr-sys = { version = "0.1.0", path = "crates/fsr-sys", default-features = false }
+fsr-sys = { version = "0.2.0", path = "crates/fsr-sys", default-features = false }
 bitflags = "2.13"
 bindgen = "0.73"
 

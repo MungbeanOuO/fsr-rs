@@ -238,13 +238,14 @@ impl FsrFrameGeneration {
     pub fn new(config: &FsrFrameGenerationConfig) -> Result<Self, FsrError> {
         let mut backend_vk_desc = fsr_sys::FfxCreateBackendVKDesc {
             header: fsr_sys::FfxApiHeader {
-                type_: fsr_sys::FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_VK as u64,
+                type_: fsr_sys::FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_VK,
                 pNext: std::ptr::null_mut(),
             },
-            vkDevice: std::ptr::null_mut(),
-            vkPhysicalDevice: std::ptr::null_mut(),
-            vkInstance: std::ptr::null_mut(),
-            vkGetDeviceProcAddr: 0,
+            deviceContext: fsr_sys::VkDeviceContext {
+                vkDevice: std::ptr::null_mut(),
+                vkPhysicalDevice: std::ptr::null_mut(),
+                vkDeviceProcAddr: None,
+            },
         };
 
         let mut backend_dx12_desc = fsr_sys::FfxCreateBackendDX12Desc {
@@ -257,10 +258,17 @@ impl FsrFrameGeneration {
 
         let backend_header_ptr: *mut fsr_sys::FfxApiHeader = match config.backend {
             FsrBackendConfig::Vulkan(vk) => {
-                backend_vk_desc.vkDevice = vk.device;
-                backend_vk_desc.vkPhysicalDevice = vk.physical_device;
-                backend_vk_desc.vkInstance = vk.instance;
-                backend_vk_desc.vkGetDeviceProcAddr = vk.get_device_proc_addr;
+                backend_vk_desc.deviceContext.vkDevice = vk.device as _;
+                backend_vk_desc.deviceContext.vkPhysicalDevice = vk.physical_device as _;
+                backend_vk_desc.deviceContext.vkDeviceProcAddr = if vk.get_device_proc_addr != 0 {
+                    unsafe {
+                        std::mem::transmute::<usize, fsr_sys::PFN_vkGetDeviceProcAddr>(
+                            vk.get_device_proc_addr,
+                        )
+                    }
+                } else {
+                    None
+                };
                 &mut backend_vk_desc.header as *mut fsr_sys::FfxApiHeader
             }
             FsrBackendConfig::Dx12(dx) => {

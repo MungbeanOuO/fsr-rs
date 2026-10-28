@@ -21,6 +21,9 @@ pub const FFX_API_DISPATCH_DESC_TYPE_FRAMEGENERATION: u64 =
 pub const FFX_API_DISPATCH_DESC_TYPE_FRAMEGENERATION_PREPARE_V2: u64 =
     FFX_API_DISPATCH_DESC_TYPE_FRAMEGENERATION_PREPARE_V2_CONST;
 
+pub const FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_VK: u64 =
+    FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_VK_CONST;
+
 // Convenient aliases with idiomatic PascalCase
 pub type FfxApiHeader = ffxApiHeader;
 pub type FfxCreateContextDescUpscale = ffxCreateContextDescUpscale;
@@ -53,6 +56,11 @@ mod tests {
         assert!(std::mem::size_of::<ffxCreateContextDescUpscale>() > 0);
         assert!(std::mem::size_of::<ffxDispatchDescUpscale>() > 0);
 
+        // Verify Vulkan Backend Desc and VkDeviceContext size and alignment
+        assert_eq!(std::mem::size_of::<VkDeviceContext>(), 24);
+        assert_eq!(std::mem::size_of::<ffxCreateBackendVKDesc>(), 40);
+        assert_eq!(std::mem::align_of::<ffxCreateBackendVKDesc>(), 8);
+
         // Verify DX12 Backend Desc size and alignment
         assert_eq!(std::mem::size_of::<ffxCreateBackendDX12Desc>(), 24);
         assert_eq!(std::mem::align_of::<ffxCreateBackendDX12Desc>(), 8);
@@ -81,6 +89,7 @@ mod tests {
             0x0002000c
         );
         assert_eq!(FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_DX12, 2);
+        assert_eq!(FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_VK, 0x01000003);
         assert_eq!(FFX_API_DESC_TYPE_OVERRIDE_VERSION, 5);
         assert_eq!(FFX_API_QUERY_DESC_TYPE_GET_VERSIONS, 4);
     }

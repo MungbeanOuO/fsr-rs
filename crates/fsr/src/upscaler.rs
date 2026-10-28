@@ -247,8 +247,27 @@ impl FsrUpscaler {
     pub fn query_available_versions(
         backend: &FsrBackendConfig,
     ) -> Result<Vec<(u64, String)>, FsrError> {
+        let mut vk_context = match backend {
+            FsrBackendConfig::Vulkan(vk) => Some(fsr_sys::VkDeviceContext {
+                vkDevice: vk.device as _,
+                vkPhysicalDevice: vk.physical_device as _,
+                vkDeviceProcAddr: if vk.get_device_proc_addr != 0 {
+                    unsafe {
+                        std::mem::transmute::<usize, fsr_sys::PFN_vkGetDeviceProcAddr>(
+                            vk.get_device_proc_addr,
+                        )
+                    }
+                } else {
+                    None
+                },
+            }),
+            FsrBackendConfig::Dx12(_) => None,
+        };
+
         let device_ptr = match backend {
-            FsrBackendConfig::Vulkan(vk) => vk.device,
+            FsrBackendConfig::Vulkan(_) => {
+                vk_context.as_mut().unwrap() as *mut fsr_sys::VkDeviceContext as *mut c_void
+            }
             FsrBackendConfig::Dx12(dx) => dx.device,
         };
 
@@ -307,13 +326,14 @@ impl FsrUpscaler {
     pub fn new(config: &FsrUpscalerConfig) -> Result<Self, FsrError> {
         let mut backend_vk_desc = fsr_sys::FfxCreateBackendVKDesc {
             header: fsr_sys::FfxApiHeader {
-                type_: fsr_sys::FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_VK as u64,
+                type_: fsr_sys::FFX_API_CREATE_CONTEXT_DESC_TYPE_BACKEND_VK,
                 pNext: std::ptr::null_mut(),
             },
-            vkDevice: std::ptr::null_mut(),
-            vkPhysicalDevice: std::ptr::null_mut(),
-            vkInstance: std::ptr::null_mut(),
-            vkGetDeviceProcAddr: 0,
+            deviceContext: fsr_sys::VkDeviceContext {
+                vkDevice: std::ptr::null_mut(),
+                vkPhysicalDevice: std::ptr::null_mut(),
+                vkDeviceProcAddr: None,
+            },
         };
 
         let mut backend_dx12_desc = fsr_sys::FfxCreateBackendDX12Desc {
@@ -326,10 +346,17 @@ impl FsrUpscaler {
 
         let backend_header_ptr: *mut fsr_sys::FfxApiHeader = match config.backend {
             FsrBackendConfig::Vulkan(vk) => {
-                backend_vk_desc.vkDevice = vk.device;
-                backend_vk_desc.vkPhysicalDevice = vk.physical_device;
-                backend_vk_desc.vkInstance = vk.instance;
-                backend_vk_desc.vkGetDeviceProcAddr = vk.get_device_proc_addr;
+                backend_vk_desc.deviceContext.vkDevice = vk.device as _;
+                backend_vk_desc.deviceContext.vkPhysicalDevice = vk.physical_device as _;
+                backend_vk_desc.deviceContext.vkDeviceProcAddr = if vk.get_device_proc_addr != 0 {
+                    unsafe {
+                        std::mem::transmute::<usize, fsr_sys::PFN_vkGetDeviceProcAddr>(
+                            vk.get_device_proc_addr,
+                        )
+                    }
+                } else {
+                    None
+                };
                 &mut backend_vk_desc.header as *mut fsr_sys::FfxApiHeader
             }
             FsrBackendConfig::Dx12(dx) => {

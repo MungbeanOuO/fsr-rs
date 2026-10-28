@@ -1,6 +1,6 @@
 //! Modern, safe, zero-dependency Rust bindings for AMD FidelityFX Super Resolution (FSR).
 //!
-//! Aligned with AMD FSR SDK 2.3.0 and the modern `ffx_api` architecture standard.
+//! Aligned with AMD FSR SDK 2.4.0 and the modern `ffx_api` architecture standard.
 
 #![allow(clippy::unnecessary_cast)]
 
@@ -291,8 +291,8 @@ mod tests {
         assert!(config_dx.version_override.is_none());
 
         let mut config_with_fsr4 = config_dx;
-        config_with_fsr4.version_override = Some(40101); // FSR 4.1.1 version override
-        assert_eq!(config_with_fsr4.version_override, Some(40101));
+        config_with_fsr4.version_override = Some(40102); // FSR 4.1.2 version override
+        assert_eq!(config_with_fsr4.version_override, Some(40102));
 
         // Test FsrFrameGenerationConfig builder helpers
         let fg_config_vk = FsrFrameGenerationConfig::vulkan(

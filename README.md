@@ -13,8 +13,8 @@ Modern, high-performance, and **non-opinionated** Rust bindings for **AMD Fideli
   - Pure, transparent C-ABI primitive handles (`u64`, `*mut c_void`, `u32`, `f32`).
   - Seamlessly integrates with any graphics library (`ash`, `wgpu-hal`, `vulkano`, `windows`, or custom raw FFI).
 - **Dual-Backend Support (Vulkan & DirectX 12)**:
-  - **Vulkan (Cross-Platform)**: Supports FSR 3.1.5 (Upscaler) with 10 precompiled SPIR-V passes and FSR 3.1.6 (Frame Generation).
-  - **DirectX 12 (Windows)**: Supports dynamic version overrides to invoke official signed providers, including **FSR 4.1.1 (ML Neural Network Upscaling)**.
+  - **Vulkan (Cross-Platform)**: Supports FSR 3.1.6 (Upscaler) with 10 precompiled SPIR-V passes, FSR 3.1.6 / 4.0 (Frame Generation), and official **FSR 4.1.2 (ML Neural Network)** via version override.
+  - **DirectX 12 (Windows)**: Supports dynamic version overrides to invoke official signed providers, including **FSR 4.1.2 (ML Neural Network Upscaling)**.
 - **Decoupled Architecture**:
   - Independent **`FsrUpscaler`** and **`FsrFrameGeneration`** contexts.
 - **RenderGraph & Memory Aliasing**:
@@ -113,9 +113,9 @@ fn run_upscaler(
 
 ---
 
-### 2. DirectX 12 & FSR 4 (ML) Version Override
+### 2. Dynamic Version Override & FSR 4 (ML) (Vulkan & DirectX 12)
 
-On Windows with DirectX 12, query available provider versions and override the version ID on context creation to enable FSR 4:
+Query available provider versions and override the version ID on context creation to enable official signed providers, including **FSR 4.1.2 ML Neural Network**:
 
 ```rust,no_run
 use fsr::{
@@ -127,7 +127,7 @@ use std::ffi::c_void;
 fn run_fsr4_dx12(d3d12_device: *mut c_void) -> Result<(), fsr::FsrError> {
     let backend = FsrBackendConfig::Dx12(Dx12BackendConfig::new(d3d12_device));
 
-    // Enumerate supported versions (e.g. FSR 2.3.4, FSR 3.1.5, FSR 4.1.1 ML)
+    // Enumerate supported versions (e.g. FSR 2.3.4, FSR 3.1.6, FSR 4.1.2 ML)
     let available_versions = FsrUpscaler::query_available_versions(&backend)?;
     let fsr4_id = available_versions.iter().find(|(_, name)| name.contains("4.")).map(|(id, _)| *id);
 
